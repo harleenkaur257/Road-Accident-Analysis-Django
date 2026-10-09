@@ -1,0 +1,475 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Road Accident Analysis</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #172033;
+            color: white;
+            padding: 22px 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 7px 0 0;
+            color: #cbd5e1;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            max-width: 1250px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px 18px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.13);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .number {
+            font-size: 29px;
+            font-weight: bold;
+            color: #172033;
+        }
+
+        /* ================= WELCOME ================= */
+
+        .welcome {
+            background: white;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .welcome h2 {
+            margin-bottom: 8px;
+            color: #172033;
+        }
+
+        .welcome p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .road-video {
+            width: 100%;
+            max-height: 430px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 25px;
+        }
+
+        /* ================= SECTION TITLE ================= */
+
+        .section-title {
+            text-align: center;
+            margin: 45px 0 25px;
+        }
+
+        .section-title h2 {
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .section-title p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* ================= FEATURE CARDS ================= */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: 0.25s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.14);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 165px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .feature-content {
+            padding: 18px;
+        }
+
+        .feature-content h3 {
+            margin: 0 0 8px;
+            color: #172033;
+        }
+
+        .feature-content p {
+            margin: 0;
+            color: #64748b;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        /* ================= GALLERY ================= */
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: 0.25s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            margin-top: 50px;
+            background: #172033;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 22px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features,
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+{% include "dashboard/navbar.html" %}
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <img
+        src="{% static 'dashboard/images/logo.png' %}"
+        alt="Road Accident Analysis"
+        class="logo"
+    >
+
+    <div>
+        <h1>🚗 Road Accident Analysis</h1>
+        <p>Data-driven analysis of road accidents in India</p>
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="cards">
+
+        <div class="stat-card">
+            <h3>Total Records</h3>
+            <div class="number">{{ total_accidents }}</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Columns</h3>
+            <div class="number">{{ total_columns }}</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Years Covered</h3>
+            <div class="number">{{ years_covered }}</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>States</h3>
+            <div class="number">{{ total_states }}</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Cities</h3>
+            <div class="number">{{ total_cities }}</div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= VIDEO + WELCOME ================= -->
+
+    <div class="welcome">
+
+        <video class="road-video" controls>
+            <source
+                src="{% static 'dashboard/images/road.mp4' %}"
+                type="video/mp4"
+            >
+        </video>
+
+        <h2>Welcome to the Road Accident Analysis Dashboard</h2>
+
+        <p>
+            This dashboard uses accident records stored in a Django database
+            to explore road accident patterns, severity, causes, locations,
+            weather conditions and risk factors.
+        </p>
+
+    </div>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <div class="section-title">
+
+        <h2>🔍 Explore the Analysis</h2>
+
+        <p>
+            Explore different aspects of road accident data through
+            interactive analysis and visualizations.
+        </p>
+
+    </div>
+
+
+    <div class="features">
+
+        <!-- Feature 1 -->
+
+        <div class="feature-card">
+
+            <img
+                src="{% static 'dashboard/images/feature1.jpg' %}"
+                alt="Accident Analysis"
+            >
+
+            <div class="feature-content">
+
+                <h3>📊 Accident Analysis</h3>
+
+                <p>
+                    Explore accident patterns, causes, severity,
+                    risk factors and accident trends.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Feature 2 -->
+
+        <div class="feature-card">
+
+            <img
+                src="{% static 'dashboard/images/feature2.jpg' %}"
+                alt="Data Visualization"
+            >
+
+            <div class="feature-content">
+
+                <h3>📈 Data Visualization</h3>
+
+                <p>
+                    Understand accident data through interactive
+                    charts and visual representations.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Feature 3 -->
+
+        <div class="feature-card">
+
+            <img
+                src="{% static 'dashboard/images/feature3.jpg' %}"
+                alt="Accident Map"
+            >
+
+            <div class="feature-content">
+
+                <h3>🗺️ Accident Map</h3>
+
+                <p>
+                    Explore accident locations and geographical
+                    patterns across different regions.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Feature 4 -->
+
+        <div class="feature-card">
+
+            <img
+                src="{% static 'dashboard/images/feature4.jpg' %}"
+                alt="Road Safety"
+            >
+
+            <div class="feature-content">
+
+                <h3>🚦 Road Safety Insights</h3>
+
+                <p>
+                    Study weather, roads, traffic and other factors
+                    related to accident risk.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= GALLERY ================= -->
+
+    <div class="section-title">
+
+        <h2>📸 Project Gallery</h2>
+
+        <p>Visual highlights from the Road Accident Analysis project.</p>
+
+    </div>
+
+
+    <div class="gallery">
+
+        <img src="{% static 'dashboard/images/gallery1.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery2.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery3.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery4.PNG' %}" alt="Gallery">
+
+        <img src="{% static 'dashboard/images/gallery5.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery6.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery7.PNG' %}" alt="Gallery">
+        <img src="{% static 'dashboard/images/gallery8.PNG' %}" alt="Gallery">
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    🚦 Road Accident Analysis System
+    <br>
+    Django • SQLite • Python • Data Visualization
+
+</footer>
+
+</body>
+</html>

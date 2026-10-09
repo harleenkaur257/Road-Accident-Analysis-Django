@@ -1,0 +1,439 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Road Accident Analysis</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #061A40;
+            color: white;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px 0 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            color: #38bdf8;
+            font-size: 32px;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: white;
+            background: #0ea5e9;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #0284c7;
+        }
+
+        .main-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .main-tab {
+            text-decoration: none;
+            color: white;
+            background: #0b285c;
+            border: 1px solid #214b88;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .main-tab:hover {
+            background: #123a79;
+            transform: translateY(-2px);
+        }
+
+        .main-tab.active {
+            background: #0ea5e9;
+            border-color: #38bdf8;
+        }
+
+        .section-title {
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .chart-tab {
+            text-decoration: none;
+            color: #dbeafe;
+            background: #0b285c;
+            border: 1px solid #1e477f;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chart-tab:hover {
+            background: #123a79;
+        }
+
+        .chart-tab.active {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: white;
+        }
+
+        .chart-card {
+            background: #081f49;
+            border: 1px solid #183e73;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+        }
+
+        .chart-heading {
+            margin-bottom: 5px;
+        }
+
+        .chart-heading h3 {
+            margin: 0;
+            font-size: 22px;
+            color: #38bdf8;
+        }
+
+        .chart-heading p {
+            margin: 7px 0 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        #analysisChart {
+            width: 100%;
+            height: 620px;
+        }
+
+        @media(max-width: 800px) {
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .topbar h1 {
+                font-size: 25px;
+            }
+
+            #analysisChart {
+                height: 500px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+{% include "dashboard/navbar.html" %}
+<div class="container">
+
+    <div class="topbar">
+
+        <h1>📊 Road Accident Analysis</h1>
+
+        <a href="/" class="home-btn">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <!-- MAIN ANALYSIS TABS -->
+
+    <div class="main-tabs">
+
+        {% for item in section_links %}
+
+            <a
+                href="?section={{ item.key }}&chart={{ item.first_chart }}"
+                class="main-tab {% if item.key == section %}active{% endif %}"
+            >
+                {{ item.name }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- CURRENT SECTION -->
+
+    <div class="section-title">
+
+        <h2>
+            {{ section_name }}
+        </h2>
+
+    </div>
+
+
+    <!-- CHART TABS -->
+
+    <div class="chart-tabs">
+
+        {% for key, name in chart_options %}
+
+            <a
+                href="?section={{ section }}&chart={{ key }}"
+                class="chart-tab {% if key == chart %}active{% endif %}"
+            >
+                {{ name }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- CHART -->
+
+    <div class="chart-card">
+
+        <div class="chart-heading">
+
+            <h3>
+                {{ chart_data.title }}
+            </h3>
+
+            <p>
+                Data is generated directly from the Django SQLite database.
+            </p>
+
+        </div>
+
+        <div id="analysisChart"></div>
+
+    </div>
+
+</div>
+
+
+<!-- SAFE DJANGO JSON -->
+
+{{ chart_data|json_script:"chart-data" }}
+
+
+<script>
+
+    const chartData =
+        JSON.parse(
+            document.getElementById("chart-data").textContent
+        );
+
+
+    let traces = [];
+
+
+    /* ==========================
+       PIE CHART
+       ========================== */
+
+    if (chartData.type === "pie") {
+
+        traces = [{
+            labels: chartData.labels,
+            values: chartData.values,
+            type: "pie",
+            hole: 0.35,
+            textinfo: "label+percent",
+            hoverinfo: "label+value+percent"
+        }];
+
+    }
+
+
+    /* ==========================
+       MULTIPLE SERIES
+       ========================== */
+
+    else if (chartData.series.length > 0) {
+
+        chartData.series.forEach(function(series) {
+
+            if (chartData.type === "line") {
+
+                traces.push({
+                    x: chartData.labels,
+                    y: series.values,
+                    name: series.name,
+                    type: "scatter",
+                    mode: "lines+markers"
+                });
+
+            }
+
+            else {
+
+                traces.push({
+                    x: chartData.labels,
+                    y: series.values,
+                    name: series.name,
+                    type: "bar"
+                });
+
+            }
+
+        });
+
+    }
+
+
+    /* ==========================
+       NORMAL CHART
+       ========================== */
+
+    else {
+
+        if (chartData.type === "line") {
+
+            traces = [{
+                x: chartData.labels,
+                y: chartData.values,
+                type: "scatter",
+                mode: "lines+markers",
+                name: chartData.title
+            }];
+
+        }
+
+        else {
+
+            traces = [{
+                x: chartData.labels,
+                y: chartData.values,
+                type: "bar",
+                name: chartData.title
+            }];
+
+        }
+
+    }
+
+
+    const layout = {
+
+        paper_bgcolor: "#081f49",
+
+        plot_bgcolor: "#081f49",
+
+        font: {
+            color: "#ffffff"
+        },
+
+        margin: {
+            l: 70,
+            r: 30,
+            t: 30,
+            b: 100
+        },
+
+        xaxis: {
+            title: "",
+            gridcolor: "#183e73",
+            tickangle: -35
+        },
+
+        yaxis: {
+            title: chartData.y_title,
+            gridcolor: "#183e73"
+        },
+
+        legend: {
+            orientation: "h",
+            y: -0.25
+        },
+
+        hoverlabel: {
+            bgcolor: "#0f172a",
+            font: {
+                color: "white"
+            }
+        },
+
+        barmode: chartData.stacked
+            ? "stack"
+            : "group"
+    };
+
+
+    const config = {
+
+        responsive: true,
+
+        displaylogo: false,
+
+        modeBarButtonsToRemove: [
+            "lasso2d",
+            "select2d"
+        ]
+
+    };
+
+
+    Plotly.newPlot(
+        "analysisChart",
+        traces,
+        layout,
+        config
+    );
+
+</script>
+
+
+</body>
+
+</html>

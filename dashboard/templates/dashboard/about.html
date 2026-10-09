@@ -1,0 +1,642 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>About - Road Accident Analysis</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #061A40;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: auto;
+            padding: 30px 0 60px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .title {
+            color: #38bdf8;
+            font-size: 38px;
+            margin: 0;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: white;
+            background: #0ea5e9;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #0284c7;
+        }
+
+        .logo {
+            display: block;
+            width: 130px;
+            margin: 10px auto 20px;
+        }
+
+        .intro {
+            background: #081f49;
+            border: 1px solid #1d4d88;
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .intro h2 {
+            color: #38bdf8;
+            margin-top: 0;
+        }
+
+        .intro p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .nav-btn {
+            border: 1px solid #2563a8;
+            background: #0b285c;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #0ea5e9;
+        }
+
+        .content {
+            background: #081f49;
+            border: 1px solid #1d4d88;
+            border-radius: 18px;
+            padding: 30px;
+            min-height: 360px;
+        }
+
+        .content h2 {
+            color: #38bdf8;
+            margin-top: 0;
+        }
+
+        .content p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .content ul {
+            padding-left: 25px;
+        }
+
+        .content li {
+            margin: 13px 0;
+            color: #dbeafe;
+            line-height: 1.5;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-card {
+            background: #0b285c;
+            border: 1px solid #214b88;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tech-card h3 {
+            color: #38bdf8;
+            margin-top: 0;
+        }
+
+        .tech-card p {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: #0b285c;
+            border: 1px solid #214b88;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            color: #38bdf8;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 35px;
+            color: #64748b;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @media(max-width: 800px) {
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .title {
+                font-size: 28px;
+            }
+
+            .tech-grid,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+{% include "dashboard/navbar.html" %}
+<div class="container">
+
+
+    <div class="topbar">
+
+        <h1 class="title">
+            🚦 Road Accident Analysis System
+        </h1>
+
+        <a href="/" class="home-btn">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <div class="intro">
+
+        <img
+            src="{% static 'dashboard/images/logo.png' %}"
+            class="logo"
+            alt="Road Accident Analysis Logo"
+        >
+
+        <h2>
+            About the Project
+        </h2>
+
+        <p>
+            The Road Accident Analysis System is a Django-based
+            data analysis and visualization project designed to
+            study Indian road accident data. The system stores
+            accident records in a SQLite database and provides
+            interactive analysis, accident hotspot mapping and
+            database-driven insights.
+        </p>
+
+    </div>
+
+
+    <div class="navigation">
+
+        <button
+            class="nav-btn active"
+            onclick="showPage('overview', this)"
+        >
+            Project Overview
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('objectives', this)"
+        >
+            Objectives
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('technology', this)"
+        >
+            Technology Stack
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('dataset', this)"
+        >
+            Dataset Information
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('future', this)"
+        >
+            Future Scope
+        </button>
+
+    </div>
+
+
+    <!-- OVERVIEW -->
+
+    <div
+        id="overview"
+        class="content page active"
+    >
+
+        <h2>📊 Project Overview</h2>
+
+        <p>
+            This project provides an interactive platform for
+            exploring and understanding road accident patterns.
+            Accident records are stored in the Django database
+            instead of being processed directly from a CSV file.
+        </p>
+
+        <ul>
+            <li>Accident trend analysis</li>
+            <li>City-based accident analysis</li>
+            <li>Weather impact analysis</li>
+            <li>Road type analysis</li>
+            <li>Accident severity analysis</li>
+            <li>Vehicle involvement analysis</li>
+            <li>Risk score analysis</li>
+            <li>Geographical accident hotspot mapping</li>
+        </ul>
+
+    </div>
+
+
+    <!-- OBJECTIVES -->
+
+    <div
+        id="objectives"
+        class="content page"
+    >
+
+        <h2>🎯 Project Objectives</h2>
+
+        <ul>
+            <li>Analyze patterns in Indian road accidents.</li>
+
+            <li>
+                Identify accident trends across different
+                cities and states.
+            </li>
+
+            <li>
+                Study the effect of weather conditions on accidents.
+            </li>
+
+            <li>
+                Analyze the relationship between roads,
+                traffic and accident severity.
+            </li>
+
+            <li>
+                Study vehicle involvement and casualties.
+            </li>
+
+            <li>
+                Provide interactive visualizations for
+                easier understanding of the dataset.
+            </li>
+
+            <li>
+                Provide geographical accident hotspot information.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- TECHNOLOGY -->
+
+    <div
+        id="technology"
+        class="content page"
+    >
+
+        <h2>💻 Technology Stack</h2>
+
+        <div class="tech-grid">
+
+            <div class="tech-card">
+
+                <h3>Python</h3>
+
+                <p>
+                    Main programming language used
+                    for the project.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <h3>Django</h3>
+
+                <p>
+                    Web framework used to build
+                    the application.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <h3>SQLite</h3>
+
+                <p>
+                    Database used to store
+                    accident records.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <h3>Django ORM</h3>
+
+                <p>
+                    Used for querying and analyzing
+                    database records.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <h3>Plotly</h3>
+
+                <p>
+                    Used to create interactive
+                    charts and visualizations.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <h3>HTML & CSS</h3>
+
+                <p>
+                    Used to create the dashboard
+                    interface and styling.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DATASET -->
+
+    <div
+        id="dataset"
+        class="content page"
+    >
+
+        <h2>📊 Dataset Information</h2>
+
+        <p>
+            The project uses an Indian road accident dataset
+            containing accident records and multiple attributes
+            related to location, road conditions, weather,
+            vehicles and severity.
+        </p>
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <span class="stat-number">
+                    20,000
+                </span>
+
+                <span class="stat-label">
+                    Accident Records
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="stat-number">
+                    24
+                </span>
+
+                <span class="stat-label">
+                    Dataset Columns
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="stat-number">
+                    2022–2025
+                </span>
+
+                <span class="stat-label">
+                    Dataset Period
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="stat-number">
+                    India
+                </span>
+
+                <span class="stat-label">
+                    Geographic Coverage
+                </span>
+
+            </div>
+
+        </div>
+
+        <p>
+            Important fields include Accident ID, City, State,
+            Latitude, Longitude, Date, Time, Road Type,
+            Weather, Visibility, Traffic Density, Cause,
+            Accident Severity, Vehicles Involved, Casualties
+            and Risk Score.
+        </p>
+
+    </div>
+
+
+    <!-- FUTURE -->
+
+    <div
+        id="future"
+        class="content page"
+    >
+
+        <h2>🔮 Future Scope</h2>
+
+        <ul>
+
+            <li>
+                Real-time accident data integration.
+            </li>
+
+            <li>
+                Machine learning based accident prediction.
+            </li>
+
+            <li>
+                Advanced geographical hotspot detection.
+            </li>
+
+            <li>
+                Real-time road risk monitoring.
+            </li>
+
+            <li>
+                Automated accident alerts.
+            </li>
+
+            <li>
+                Integration with traffic management systems.
+            </li>
+
+            <li>
+                Predictive analysis for high-risk roads
+                and locations.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="footer">
+
+        Road Accident Analysis System |
+        Django + SQLite + Plotly
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+    function showPage(pageId, button) {
+
+        const pages =
+            document.querySelectorAll(".page");
+
+        pages.forEach(function(page) {
+            page.classList.remove("active");
+        });
+
+
+        document
+            .getElementById(pageId)
+            .classList.add("active");
+
+
+        const buttons =
+            document.querySelectorAll(".nav-btn");
+
+        buttons.forEach(function(btn) {
+            btn.classList.remove("active");
+        });
+
+
+        button.classList.add("active");
+
+    }
+
+</script>
+
+</body>
+
+</html>

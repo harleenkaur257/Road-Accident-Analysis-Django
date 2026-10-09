@@ -1,0 +1,372 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Data Processing</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #061A40;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 0 60px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #38bdf8;
+    margin: 0;
+}
+
+.home-btn {
+    text-decoration: none;
+    color: white;
+    background: #0ea5e9;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.intro,
+.workflow,
+.stats {
+    background: #081f49;
+    border: 1px solid #1d4d88;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 22px;
+}
+
+.intro h2,
+.workflow h2 {
+    color: #38bdf8;
+}
+
+.intro p {
+    color: #cbd5e1;
+    line-height: 1.8;
+}
+
+.flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.flow-card {
+    background: #0b285c;
+    border: 1px solid #214b88;
+    border-radius: 13px;
+    padding: 22px;
+    text-align: center;
+}
+
+.flow-card .icon {
+    font-size: 35px;
+}
+
+.flow-card h3 {
+    color: #38bdf8;
+}
+
+.flow-card p {
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.stat {
+    background: #0b285c;
+    border: 1px solid #214b88;
+    border-radius: 13px;
+    padding: 22px;
+    text-align: center;
+}
+
+.number {
+    display: block;
+    color: #38bdf8;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.label {
+    color: #cbd5e1;
+}
+
+.success {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #0b285c;
+    border-left: 4px solid #38bdf8;
+    color: #dbeafe;
+}
+
+@media(max-width: 800px) {
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .flow {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+{% include "dashboard/navbar.html" %}
+<div class="container">
+
+
+    <div class="topbar">
+
+        <h1>⚙️ Data Processing</h1>
+
+        <a href="/" class="home-btn">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <div class="intro">
+
+        <h2>
+            🔄 Data Processing Pipeline
+        </h2>
+
+        <p>
+            The Road Accident Analysis System processes the
+            Indian road accident dataset through Django and
+            stores the records in a SQLite database. Django ORM
+            is then used to retrieve, filter, aggregate and
+            analyze the accident information.
+        </p>
+
+    </div>
+
+
+    <div class="workflow">
+
+        <h2>
+            Project Workflow
+        </h2>
+
+        <div class="flow">
+
+
+            <div class="flow-card">
+
+                <div class="icon">📄</div>
+
+                <h3>Dataset</h3>
+
+                <p>
+                    Indian road accident dataset containing
+                    20,000 records.
+                </p>
+
+            </div>
+
+
+            <div class="flow-card">
+
+                <div class="icon">🐍</div>
+
+                <h3>Django Import</h3>
+
+                <p>
+                    Dataset records are imported into the
+                    Django application.
+                </p>
+
+            </div>
+
+
+            <div class="flow-card">
+
+                <div class="icon">🗄️</div>
+
+                <h3>SQLite Database</h3>
+
+                <p>
+                    Accident records are stored and managed
+                    using SQLite.
+                </p>
+
+            </div>
+
+
+            <div class="flow-card">
+
+                <div class="icon">📊</div>
+
+                <h3>Analysis</h3>
+
+                <p>
+                    Django ORM retrieves and processes data
+                    for charts and insights.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="success">
+
+            ✅ Database processing completed successfully.
+            The dashboard is currently connected to the
+            Django SQLite database.
+
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <h2>
+            📊 Database Statistics
+        </h2>
+
+
+        <div class="stats-grid">
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_records }}
+                </span>
+
+                <span class="label">
+                    Accident Records
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_states }}
+                </span>
+
+                <span class="label">
+                    States
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_cities }}
+                </span>
+
+                <span class="label">
+                    Cities
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_severities }}
+                </span>
+
+                <span class="label">
+                    Severity Categories
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_weather }}
+                </span>
+
+                <span class="label">
+                    Weather Categories
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span class="number">
+                    {{ total_road_types }}
+                </span>
+
+                <span class="label">
+                    Road Types
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

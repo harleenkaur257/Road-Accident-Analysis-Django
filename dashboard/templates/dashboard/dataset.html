@@ -1,0 +1,565 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dataset - Road Accident Analysis</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #061A40;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 96%;
+            max-width: 1550px;
+            margin: auto;
+            padding: 25px 0 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #38bdf8;
+            font-size: 36px;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: white;
+            background: #0ea5e9;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #0284c7;
+        }
+
+        .filter-card {
+            background: #081f49;
+            border: 1px solid #1d4d88;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            color: #bae6fd;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            min-width: 190px;
+            padding: 11px;
+            border-radius: 8px;
+            border: 1px solid #2563a8;
+            background: #0b285c;
+            color: white;
+            font-size: 14px;
+        }
+
+        input {
+            min-width: 260px;
+        }
+
+        .filter-btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            background: #0ea5e9;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .clear-btn {
+            padding: 11px 20px;
+            border-radius: 8px;
+            background: #173764;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .stats {
+            background: #081f49;
+            border: 1px solid #1d4d88;
+            border-radius: 14px;
+            padding: 17px 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats strong {
+            color: #38bdf8;
+            font-size: 21px;
+        }
+
+        .table-card {
+            background: #081f49;
+            border: 1px solid #1d4d88;
+            border-radius: 16px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1450px;
+        }
+
+        th {
+            background: #0b285c;
+            color: #38bdf8;
+            padding: 13px 10px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 11px 10px;
+            border-bottom: 1px solid #173764;
+            color: #dbeafe;
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: #0b285c;
+        }
+
+        .severity {
+            font-weight: bold;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .page-btn {
+            text-decoration: none;
+            background: #0ea5e9;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .page-btn.disabled {
+            background: #173764;
+            color: #64748b;
+            pointer-events: none;
+        }
+
+        .page-number {
+            color: #bae6fd;
+        }
+
+        @media(max-width: 700px) {
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+{% include "dashboard/navbar.html" %}
+<div class="container">
+
+
+    <div class="topbar">
+
+        <h1>
+            📊 Road Accident Dataset
+        </h1>
+
+        <a href="/" class="home-btn">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <form method="get" class="filter-card">
+
+
+        <div class="filter-group">
+
+            <label>
+                Search
+            </label>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search city, state, weather..."
+            >
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label>
+                City
+            </label>
+
+            <select name="city">
+
+                <option value="All">
+                    All Cities
+                </option>
+
+                {% for city in cities %}
+
+                    <option
+                        value="{{ city }}"
+                        {% if city == selected_city %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ city }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label>
+                State
+            </label>
+
+            <select name="state">
+
+                <option value="All">
+                    All States
+                </option>
+
+                {% for state in states %}
+
+                    <option
+                        value="{{ state }}"
+                        {% if state == selected_state %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ state }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label>
+                Severity
+            </label>
+
+            <select name="severity">
+
+                <option value="All">
+                    All Severities
+                </option>
+
+                {% for severity in severities %}
+
+                    <option
+                        value="{{ severity }}"
+                        {% if severity == selected_severity %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ severity }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="filter-btn"
+        >
+            Apply Filters
+        </button>
+
+
+        <a
+            href="/dataset/"
+            class="clear-btn"
+        >
+            Clear
+        </a>
+
+
+    </form>
+
+
+    <!-- STAT -->
+
+    <div class="stats">
+
+        Showing
+        <strong>{{ total_filtered|default:0 }}</strong>
+        matching accident records
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Accident ID</th>
+
+                    <th>City</th>
+
+                    <th>State</th>
+
+                    <th>Date</th>
+
+                    <th>Time</th>
+
+                    <th>Road Type</th>
+
+                    <th>Weather</th>
+
+                    <th>Visibility</th>
+
+                    <th>Traffic Density</th>
+
+                    <th>Cause</th>
+
+                    <th>Severity</th>
+
+                    <th>Vehicles</th>
+
+                    <th>Casualties</th>
+
+                    <th>Risk Score</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for accident in page_obj %}
+
+                <tr>
+
+                    <td>
+                        {{ accident.accident_id }}
+                    </td>
+
+                    <td>
+                        {{ accident.city }}
+                    </td>
+
+                    <td>
+                        {{ accident.state }}
+                    </td>
+
+                    <td>
+                        {{ accident.date }}
+                    </td>
+
+                    <td>
+                        {{ accident.time }}
+                    </td>
+
+                    <td>
+                        {{ accident.road_type }}
+                    </td>
+
+                    <td>
+                        {{ accident.weather }}
+                    </td>
+
+                    <td>
+                        {{ accident.visibility }}
+                    </td>
+
+                    <td>
+                        {{ accident.traffic_density }}
+                    </td>
+
+                    <td>
+                        {{ accident.cause }}
+                    </td>
+
+                    <td class="severity">
+                        {{ accident.accident_severity }}
+                    </td>
+
+                    <td>
+                        {{ accident.vehicles_involved }}
+                    </td>
+
+                    <td>
+                        {{ accident.casualties }}
+                    </td>
+
+                    <td>
+                        {{ accident.risk_score|floatformat:2 }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="14"
+                        style="text-align:center;padding:40px;"
+                    >
+                        No accident records found.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- PAGINATION -->
+
+    {% if page_obj.paginator.num_pages > 1 %}
+
+    <div class="pagination">
+
+
+        {% if page_obj.has_previous %}
+
+            <a
+                class="page-btn"
+                href="?search={{ search }}&city={{ selected_city }}&state={{ selected_state }}&severity={{ selected_severity }}&page={{ page_obj.previous_page_number }}"
+            >
+                ← Previous
+            </a>
+
+        {% else %}
+
+            <span class="page-btn disabled">
+                ← Previous
+            </span>
+
+        {% endif %}
+
+
+        <span class="page-number">
+
+            Page
+            <strong>
+                {{ page_obj.number }}
+            </strong>
+            of
+            <strong>
+                {{ page_obj.paginator.num_pages }}
+            </strong>
+
+        </span>
+
+
+        {% if page_obj.has_next %}
+
+            <a
+                class="page-btn"
+                href="?search={{ search }}&city={{ selected_city }}&state={{ selected_state }}&severity={{ selected_severity }}&page={{ page_obj.next_page_number }}"
+            >
+                Next →
+            </a>
+
+        {% else %}
+
+            <span class="page-btn disabled">
+                Next →
+            </span>
+
+        {% endif %}
+
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>

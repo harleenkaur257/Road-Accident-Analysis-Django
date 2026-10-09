@@ -1,0 +1,390 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Accident Map</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #061A40;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px 0 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #38bdf8;
+            font-size: 32px;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: white;
+            background: #0ea5e9;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #0284c7;
+        }
+
+        .filter-card {
+            background: #081f49;
+            border: 1px solid #183e73;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: #bae6fd;
+            font-weight: bold;
+        }
+
+        select {
+            min-width: 230px;
+            padding: 11px;
+            border-radius: 8px;
+            border: 1px solid #2563a8;
+            background: #0b285c;
+            color: white;
+            font-size: 15px;
+        }
+
+        .filter-btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            background: #0ea5e9;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            background: #0284c7;
+        }
+
+        .map-card {
+            background: #081f49;
+            border: 1px solid #183e73;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .map-title {
+            color: #38bdf8;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .map-description {
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        #accidentMap {
+            width: 100%;
+            height: 680px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+{% include "dashboard/navbar.html" %}
+<div class="container">
+
+    <div class="topbar">
+
+        <h1>🗺️ India Road Accident Map</h1>
+
+        <a href="/" class="home-btn">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <form method="get" class="filter-card">
+
+        <div class="filter-group">
+
+            <label>
+                Weather
+            </label>
+
+            <select name="weather">
+
+                <option value="All">
+                    All Weather
+                </option>
+
+                {% for weather in weather_options %}
+
+                    <option
+                        value="{{ weather }}"
+                        {% if weather == selected_weather %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ weather }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label>
+                City
+            </label>
+
+            <select name="city">
+
+                <option value="All">
+                    All Cities
+                </option>
+
+                {% for city in city_options %}
+
+                    <option
+                        value="{{ city }}"
+                        {% if city == selected_city %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ city }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="filter-btn"
+        >
+            Apply Filters
+        </button>
+
+    </form>
+
+
+    <!-- MAP -->
+
+    <div class="map-card">
+
+        <div class="map-title">
+            Accident Hotspots
+        </div>
+
+        <div class="map-description">
+            Accident locations and hotspots generated directly
+            from the Django SQLite database.
+        </div>
+
+        <div id="accidentMap"></div>
+
+    </div>
+
+</div>
+
+
+{{ map_data|json_script:"map-data" }}
+
+
+<script>
+
+    const mapData =
+        JSON.parse(
+            document.getElementById("map-data").textContent
+        );
+
+
+    const latitudes =
+        mapData.map(item => item.latitude);
+
+    const longitudes =
+        mapData.map(item => item.longitude);
+
+
+    const sizes =
+        mapData.map(item =>
+            Math.max(
+                7,
+                Math.min(
+                    30,
+                    item.accidents / 15
+                )
+            )
+        );
+
+
+    const hoverText =
+        mapData.map(item =>
+            "<b>City:</b> " + item.city +
+            "<br><b>State:</b> " + item.state +
+            "<br><b>Accidents:</b> " + item.accidents +
+            "<br><b>Casualties:</b> " + item.casualties
+        );
+
+
+    const trace = {
+
+        type: "scattergeo",
+
+        lat: latitudes,
+
+        lon: longitudes,
+
+        mode: "markers",
+
+        text: hoverText,
+
+        hovertemplate:
+            "%{text}<extra></extra>",
+
+        marker: {
+
+            size: sizes,
+
+            opacity: 0.75,
+
+            line: {
+                width: 1
+            }
+
+        }
+
+    };
+
+
+    const layout = {
+
+        paper_bgcolor: "#081f49",
+
+        plot_bgcolor: "#081f49",
+
+        font: {
+            color: "white"
+        },
+
+        margin: {
+            l: 0,
+            r: 0,
+            t: 0,
+            b: 0
+        },
+
+        geo: {
+
+            scope: "asia",
+
+            projection: {
+                type: "mercator"
+            },
+
+            center: {
+                lat: 22.5,
+                lon: 79
+            },
+
+            lataxis: {
+                range: [6, 38]
+            },
+
+            lonaxis: {
+                range: [68, 98]
+            },
+
+            showland: true,
+
+            showcountries: true,
+
+            showcoastlines: true,
+
+            showocean: true,
+
+            bgcolor: "#081f49"
+
+        }
+
+    };
+
+
+    const config = {
+
+        responsive: true,
+
+        displaylogo: false
+
+    };
+
+
+    Plotly.newPlot(
+        "accidentMap",
+        [trace],
+        layout,
+        config
+    );
+
+</script>
+
+</body>
+
+</html>

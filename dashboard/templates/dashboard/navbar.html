@@ -1,0 +1,120 @@
+<style>
+    .main-navbar {
+        width: 100%;
+        background: #061A40;
+        border-bottom: 1px solid #1d4d88;
+        padding: 14px 4%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        box-sizing: border-box;
+    }
+
+    .nav-brand {
+        color: #38bdf8;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .nav-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        padding: 9px 13px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+        background: #0b285c;
+        color: #38bdf8;
+    }
+
+    .nav-links a.active {
+        background: #0ea5e9;
+        color: white;
+    }
+
+    @media (max-width: 950px) {
+        .main-navbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .nav-brand {
+            text-align: center;
+        }
+
+        .nav-links {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .nav-links a {
+            font-size: 13px;
+            padding: 8px 10px;
+        }
+    }
+</style>
+
+<nav class="main-navbar">
+
+    <a href="{% url 'home' %}" class="nav-brand">
+        🚦 Road Accident Analysis
+    </a>
+
+    <div class="nav-links">
+
+        <a href="{% url 'home' %}"
+           class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            🏠 Home
+        </a>
+
+        <a href="{% url 'dataset' %}"
+           class="{% if request.resolver_match.url_name == 'dataset' %}active{% endif %}">
+            📄 Dataset
+        </a>
+
+        <a href="{% url 'processing' %}"
+           class="{% if request.resolver_match.url_name == 'processing' %}active{% endif %}">
+            ⚙️ Processing
+        </a>
+
+        <a href="{% url 'analysis' %}"
+           class="{% if request.resolver_match.url_name == 'analysis' %}active{% endif %}">
+            📊 Analysis
+        </a>
+
+        <a href="{% url 'accident_map' %}"
+           class="{% if request.resolver_match.url_name == 'accident_map' %}active{% endif %}">
+            🗺️ Accident Map
+        </a>
+
+        <a href="{% url 'query' %}"
+           class="{% if request.resolver_match.url_name == 'query' %}active{% endif %}">
+            🤖 Query
+        </a>
+
+        <a href="{% url 'about' %}"
+           class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+            ℹ️ About
+        </a>
+
+    </div>
+
+</nav>
